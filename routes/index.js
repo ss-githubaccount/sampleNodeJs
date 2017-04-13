@@ -6,5 +6,8 @@ var router = express.Router();
 router.get('/', function(req, res, next) {
     res.sendFile(path.resolve(__dirname, '../views/index.html'));
 });
+router.get('/dictionary', function(req, res, next) {
+    res.sendFile(path.resolve(__dirname, '../views/index.html'));
+});
 
 module.exports = router;
