@@ -19,5 +19,6 @@ angular.module('sampleApp', ['ngRoute'])
 
         dc.getAllNotes = function() {
             console.log('reading from db');
+            // make call to /api/ here
         };
     }]);
