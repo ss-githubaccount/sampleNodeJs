@@ -45,8 +45,7 @@ var parseResults = function(rows) {
 var getNextId = function(callback) {
     var request = new Request(`SELECT MAX(id) FROM ${tableName} as newId`, function(err, rowCount, rows) {
         handleDbResult(err, rowCount, rows, function(result) {
-            var toReturn = result[0];
-            callback(parseInt(toReturn.value) + 1);
+            callback(parseInt(result[0].value || 0) + 1);
         });
     });
     conn.execSql(request);
