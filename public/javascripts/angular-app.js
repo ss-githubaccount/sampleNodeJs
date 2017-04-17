@@ -5,9 +5,9 @@ angular.module('sampleApp', ['ngRoute'])
                 templateUrl: '../partials/home.html',
                 controller: 'indexController as ic'
             })
-            .when('/dictionary', {
-                templateUrl: '../partials/dictionary.html',
-                controller: 'dictionaryController as dc'
+            .when('/notes', {
+                templateUrl: '../partials/notes.html',
+                controller: 'notesController as nc'
             });
     }])
     .controller('indexController', ['$scope', function($scope) {
@@ -19,58 +19,58 @@ angular.module('sampleApp', ['ngRoute'])
 
         ic.init();
     }])
-    .controller('dictionaryController', ['$scope', '$http', function($scope, $http) {
-        var dc = this;
+    .controller('notesController', ['$scope', '$http', function($scope, $http) {
+        var nc = this;
 
-        dc.init = function() {
-            dc.notes = [];
-            dc.GetByIdId = 1;
-            dc.GetByIdNote = "";
-            dc.GetByIdLoaded = false;
-            dc.SaveSuccessful = true;
-            dc.ErrorMessage = "";
-            dc.CreateNote = "";
+        nc.init = function() {
+            nc.notes = [];
+            nc.GetByIdId = 1;
+            nc.GetByIdNote = "";
+            nc.GetByIdLoaded = false;
+            nc.SaveSuccessful = true;
+            nc.ErrorMessage = "";
+            nc.CreateNote = "";
         }
 
-        dc.getAllNotes = function() {
+        nc.getAllNotes = function() {
             $http.get('/api/')
                 .then(function(data) {
-                    dc.notes = data.data;
+                    nc.notes = data.data;
                 }, function(err) {
                     console.log("GetAllNotes - ERROR", err);
                 });
         };
 
-        dc.getNoteById = function() {
-            dc.GetByIdLoaded = false;
-            $http.get(`/api/${dc.GetByIdId}`)
+        nc.getNoteById = function() {
+            nc.GetByIdLoaded = false;
+            $http.get(`/api/${nc.GetByIdId}`)
                 .then(function(data) {
-                    dc.GetByIdNote = data.data.note;
-                    dc.GetByIdLoaded = true;
+                    nc.GetByIdNote = data.data.note;
+                    nc.GetByIdLoaded = true;
                 }, function(err) {
                     console.log("GetNoteById - ERROR", err);
                 });
         };
 
-        dc.saveNote = function() {
-            dc.SaveSuccessful = false;
-            $http.put(`/api/${dc.GetByIdId}`, dc.GetByIdNote)
+        nc.saveNote = function() {
+            nc.SaveSuccessful = false;
+            $http.put(`/api/${nc.GetByIdId}`, nc.GetByIdNote)
                 .then(function(data) {
-                    dc.SaveSuccessful = true;
+                    nc.SaveSuccessful = true;
                 }, function(err) {
                     console.log("SaveNote - ERROR", err);
                 });
         };
 
-        dc.createNote = function() {
-            dc.SaveSuccessful = false;
-            $http.post('/api/', JSON.stringify({ note: dc.CreateNote }))
+        nc.createNote = function() {
+            nc.SaveSuccessful = false;
+            $http.post('/api/', JSON.stringify({ note: nc.CreateNote }))
                 .then(function(data) {
-                    dc.SaveSuccessful = true;
+                    nc.SaveSuccessful = true;
                 }, function(err) {
                     console.log("CreateNote - ERROR", err);
                 });
         };
 
-        dc.init();
+        nc.init();
     }]);
