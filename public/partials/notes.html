@@ -1,0 +1,30 @@
+<h1>Read and write to the SQL DB</h1>
+
+<h3>Notes</h3>
+<div>
+    <button class="btn btn-primary" ng-click="nc.getAllNotes()">Get all notes</button>
+    <div ng-if="nc.notes.length > 0">
+        <table>
+            <tr>
+                <th>Id</th>
+                <th>Note</th>
+            </tr>
+            <tr ng-repeat="note in nc.notes">
+                <td>{{note.id}}</td>
+                <td>{{note.note}}</td>
+            </tr>
+        </table>
+    </div>
+</div>
+
+<div>
+    <button class="btn btn-primary" ng-click="nc.getNoteById()">Get this note</button>
+    <input type="text" ng-model="nc.GetByIdId">
+    <textarea rows="4" cols="50" ng-model="nc.GetByIdNote"></textarea>
+    <button class="btn btn-success" ng-click="nc.saveNote()" ng-if="nc.GetByIdLoaded">Save</button>
+</div>
+
+<div>
+    <textarea rows="4" cols="50" ng-model="nc.CreateNote"></textarea>
+    <button class="btn btn-success" ng-click="nc.createNote()">Create note</button>
+</div>
