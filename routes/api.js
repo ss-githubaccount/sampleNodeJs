@@ -5,6 +5,10 @@ var dbNotes = [];
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
+    dbNotes.push({ "sql database": process.env.SQLAZURECONNSTR_defaultConnection });
+    dbNotes.push({ "sql server": process.env.SQLCONNSTR_defaultConnection });
+    dbNotes.push({ "mysql": process.env.MYSQLCONNSTR_defaultConnection });
+    dbNotes.push({ "custom": process.env.CUSTOM_CONNSTR_defaultConnection });
     res.status(200).json(dbNotes);
 });
 router.get('/{id}', function(req, res, next) {
