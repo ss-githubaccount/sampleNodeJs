@@ -11,10 +11,15 @@ angular.module('sampleApp', ['ngRoute'])
             });
     }])
     .controller('indexController', ['$scope', function($scope) {
-        console.log("starting controller");
+        var ic = this;
+
+        ic.init = function() {
+            // do nothing
+        };
+
+        ic.init();
     }])
     .controller('dictionaryController', ['$scope', '$http', function($scope, $http) {
-        console.log("starting dictionary controller");
         var dc = this;
 
         dc.init = function() {
@@ -28,7 +33,6 @@ angular.module('sampleApp', ['ngRoute'])
         }
 
         dc.getAllNotes = function() {
-            console.log('reading from db');
             $http.get('/api/')
                 .then(function(data) {
                     dc.notes = data.data;
