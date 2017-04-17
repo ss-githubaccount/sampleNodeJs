@@ -13,11 +13,17 @@ angular.module('sampleApp', ['ngRoute'])
     .controller('indexController', ['$scope', function($scope) {
         console.log("starting controller");
     }])
-    .controller('dictionaryController', ['$scope', function($scope) {
+    .controller('dictionaryController', ['$scope', '$http', function($scope, $http) {
         console.log("starting dictionary controller");
         var dc = this;
 
         dc.getAllNotes = function() {
             console.log('reading from db');
+            $http.get('/api/')
+                .then(function(data) {
+                    console.log("success", data);
+                }, function(err) {
+                    console.log("err", err);
+                });
         };
     }]);
