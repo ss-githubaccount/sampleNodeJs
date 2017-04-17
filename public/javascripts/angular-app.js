@@ -24,7 +24,7 @@ angular.module('sampleApp', ['ngRoute'])
 
         nc.init = function() {
             nc.notes = [];
-            nc.GetByIdId = 1;
+            nc.GetByIdId;
             nc.GetByIdNote = "";
             nc.GetByIdLoaded = false;
             nc.SaveSuccessful = true;
