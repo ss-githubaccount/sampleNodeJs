@@ -1,27 +1,19 @@
+var db = require('../schema/dataAccess');
 var express = require('express');
 var router = express.Router();
 
-var dbNotes = [];
+var dbConnectString = process.env.SQLAZURECONNSTR_defaultConnection;
+var table = process.env.NoteTable;
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-    dbNotes.push({ "sql database": process.env.SQLAZURECONNSTR_defaultConnection });
-    dbNotes.push({ "sql server": process.env.SQLCONNSTR_defaultConnection });
-    dbNotes.push({ "mysql": process.env.MYSQLCONNSTR_defaultConnection });
-    dbNotes.push({ "custom": process.env.CUSTOM_CONNSTR_defaultConnection });
-    res.status(200).json(dbNotes);
+    db.GetAll((result) => res.status(200).json(result.sort(function(a, b) { return a.id > b.id; })));
 });
-router.get('/{id}', function(req, res, next) {
-    res.status(200).json(dbNotes.filter(function(n) {
-        return n.id === id;
-    }));
+router.get('/:id', function(req, res, next) {
+    db.GetById(parseInt(req.params.id), (result) => res.status(200).json(result[0]));
 });
 router.post('/', function(req, res, next) {
-    var newId = Math.max.apply(Math.array.map(function(n) { return n.id; })) + 1;
-    dbNotes.push({
-        id: newId,
-        note: req.params.body
-    });
+    db.Create(req.body, result => res.status(201).json(result));
 });
 
 module.exports = router;
