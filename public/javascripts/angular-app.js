@@ -54,7 +54,7 @@ angular.module('sampleApp', ['ngRoute'])
 
         nc.saveNote = function() {
             nc.SaveSuccessful = false;
-            $http.put(`/api/${nc.GetByIdId}`, nc.GetByIdNote)
+            $http.put(`/api/${nc.GetByIdId}`, JSON.stringify({ note: nc.GetByIdNote }))
                 .then(function(data) {
                     nc.SaveSuccessful = true;
                 }, function(err) {

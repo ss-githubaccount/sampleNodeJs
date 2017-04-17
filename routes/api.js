@@ -15,5 +15,8 @@ router.get('/:id', function(req, res, next) {
 router.post('/', function(req, res, next) {
     db.Create(req.body, result => res.status(201).json(result));
 });
+router.put('/:id', function(req, res, next) {
+    db.Update(parseInt(req.params.id), req.body, result => res.status(200).json(result));
+});
 
 module.exports = router;

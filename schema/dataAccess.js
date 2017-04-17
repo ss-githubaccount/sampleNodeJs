@@ -55,10 +55,15 @@ var handleDbResult = function(err, rowCount, rows, callback) {
     if (err) {
         console.log(err);
     }
-    callback(parseResults(rows));
+    if (rowCount === 0) {
+        callback(null);
+    } else {
+        callback(parseResults(rows));
+    }
 };
 
 var db = {
+    // TODO: refactor this
     "GetAll": function(callback) {
         var request = new Request(`SELECT * FROM ${tableName}`, function(err, rowCount, rows) {
             handleDbResult(err, rowCount, rows, callback);
@@ -81,6 +86,29 @@ var db = {
             request.addParameter('note', TYPES.VarChar, note.note);
             conn.execSql(request);
         });
+    },
+    "Update": function(id, note, callback) {
+        var request = new Request(`SELECT * FROM ${tableName} WHERE id = @id`, function(err, rowCount, rows) {
+            handleDbResult(err, rowCount, rows, result => {
+                if (result === null) {
+                    var request = new Request(`INSERT INTO ${tableName} VALUES (@id, @note)`, function(err, rowcount, rows) {
+                        handleDbResult(err, rowCount, rows, result => callback(result));
+                    });
+                    request.addParameter('id', TYPES.Int, id);
+                    request.addParameter('note', TYPES.VarChar, note.note);
+                    conn.execSql(request);
+                } else {
+                    var request = new Request(`UPDATE ${tableName} SET note = @note WHERE id = @id`, function(err, rowCount, rows) {
+                        handleDbResult(err, rowCount, rows, result => callback(result));
+                    });
+                    request.addParameter('id', TYPES.Int, id);
+                    request.addParameter('note', TYPES.VarChar, note.note);
+                    conn.execSql(request);
+                }
+            });
+        });
+        request.addParameter('id', TYPES.Int, id);
+        conn.execSql(request);
     }
 };
 
