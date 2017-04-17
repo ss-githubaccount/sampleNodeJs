@@ -62,8 +62,28 @@ var handleDbResult = function(err, rowCount, rows, callback) {
     }
 };
 
+var attachParams = function(id, note, request) {
+    request.addParameter('id', TYPES.Int, id);
+    request.addParameter('note', TYPES.VarChar, note.note);
+}
+
+var createNoteEntry = function(id, note, callback) {
+    var request = new Request(`INSERT INTO ${tableName} VALUES (@id, @note)`, function(err, rowCount, rows) {
+        handleDbResult(err, rowCount, rows, result => callback(result));
+    });
+    attachParams(id, note, request);
+    conn.execSql(request);
+}
+
+var getNoteEntryById = function(id, callback) {
+    var request = new Request(`SELECT * FROM ${tableName} WHERE id = @id`, function(err, rowCount, rows) {
+        handleDbResult(err, rowCount, rows, callback);
+    });
+    attachParams(id, '', request);
+    conn.execSql(request);
+}
+
 var db = {
-    // TODO: refactor this
     "GetAll": function(callback) {
         var request = new Request(`SELECT * FROM ${tableName}`, function(err, rowCount, rows) {
             handleDbResult(err, rowCount, rows, callback);
@@ -71,44 +91,29 @@ var db = {
         conn.execSql(request);
     },
     "GetById": function(id, callback) {
-        var request = new Request(`SELECT * FROM ${tableName} WHERE id = @id`, function(err, rowCount, rows) {
-            handleDbResult(err, rowCount, rows, callback);
-        });
-        request.addParameter('id', TYPES.Int, id);
-        conn.execSql(request);
+        getNoteEntryById(id, callback);
     },
     "Create": function(note, callback) {
         getNextId(function(id) {
             var request = new Request(`INSERT INTO ${tableName} VALUES (@id, @note)`, function(err, rowCount, rows) {
                 handleDbResult(err, rowCount, rows, result => callback(result));
             });
-            request.addParameter('id', TYPES.Int, id);
-            request.addParameter('note', TYPES.VarChar, note.note);
+            attachParams(id, note, request);
             conn.execSql(request);
         });
     },
     "Update": function(id, note, callback) {
-        var request = new Request(`SELECT * FROM ${tableName} WHERE id = @id`, function(err, rowCount, rows) {
-            handleDbResult(err, rowCount, rows, result => {
-                if (result === null) {
-                    var request = new Request(`INSERT INTO ${tableName} VALUES (@id, @note)`, function(err, rowcount, rows) {
-                        handleDbResult(err, rowCount, rows, result => callback(result));
-                    });
-                    request.addParameter('id', TYPES.Int, id);
-                    request.addParameter('note', TYPES.VarChar, note.note);
-                    conn.execSql(request);
-                } else {
-                    var request = new Request(`UPDATE ${tableName} SET note = @note WHERE id = @id`, function(err, rowCount, rows) {
-                        handleDbResult(err, rowCount, rows, result => callback(result));
-                    });
-                    request.addParameter('id', TYPES.Int, id);
-                    request.addParameter('note', TYPES.VarChar, note.note);
-                    conn.execSql(request);
-                }
-            });
+        getNoteEntryById(id, function(result) {
+            if (result) {
+                var request = new Request(`UPDATE ${tableName} SET note = @note WHERE id = @id`, function(err, rowCount, rows) {
+                    handleDbResult(err, rowCount, rows, result => callback(result));
+                });
+                attachParams(id, note, request);
+                conn.execSql(request);
+            } else {
+                createNoteEntry(id, note, callback);
+            }
         });
-        request.addParameter('id', TYPES.Int, id);
-        conn.execSql(request);
     }
 };
 

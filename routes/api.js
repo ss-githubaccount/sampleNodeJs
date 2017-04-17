@@ -10,7 +10,13 @@ router.get('/', function(req, res, next) {
     db.GetAll((result) => res.status(200).json(result.sort(function(a, b) { return a.id > b.id; })));
 });
 router.get('/:id', function(req, res, next) {
-    db.GetById(parseInt(req.params.id), (result) => res.status(200).json(result[0]));
+    db.GetById(parseInt(req.params.id), (result) => {
+        if (result) {
+            res.status(200).json(result[0]);
+        } else {
+            res.status(404).json(`There is no note with Id: ${req.params.id}`);
+        }
+    });
 });
 router.post('/', function(req, res, next) {
     db.Create(req.body, result => res.status(201).json(result));

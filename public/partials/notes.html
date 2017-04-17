@@ -18,7 +18,7 @@
 </div>
 
 <div>
-    <button class="btn btn-primary" ng-click="nc.getNoteById()">Get this note</button>
+    <button class="btn btn-primary" ng-click="nc.getNoteById()" ng-disabled="!nc.GetByIdId">Get this note</button>
     <input type="text" ng-model="nc.GetByIdId">
     <textarea rows="4" cols="50" ng-model="nc.GetByIdNote"></textarea>
     <button class="btn btn-success" ng-click="nc.saveNote()" ng-disabled="!nc.GetByIdId || nc.GetByIdNote.length === 0">Save</button>
