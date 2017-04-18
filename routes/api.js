@@ -7,7 +7,7 @@ var table = process.env.NoteTable;
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-    db.GetAll((result) => res.status(200).json(result.sort(function(a, b) { return a.id > b.id; })));
+    db.GetAll((result) => res.status(200).json(result.sort(function(a, b) { return parseInt(a.id) - parseInt(b.id); })));
 });
 router.get('/:id', function(req, res, next) {
     db.GetById(parseInt(req.params.id), (result) => {

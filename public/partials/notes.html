@@ -1,30 +1,84 @@
-<h1>Read and write to the SQL DB</h1>
-
-<h3>Notes</h3>
+<div class="alert alert-success" ng-show="nc.SaveSuccessful">
+    <a href="#" class="close" aria-label="close" ng-click="nc.SaveSuccessful=false">&times;</a>
+    <strong>Success!</strong> Note saved
+</div>
+<div class="alert alert-danger" ng-show="nc.ErrorMessage.length > 0">
+    <a href="#" class="close" aria-label="close" ng-click="nc.ErrorMessage=''">&times;</a>
+    <strong>Oh no!</strong> There was a problem {{nc.ErrorMessage}}
+</div>
+<h1>Notes</h1>
 <div>
-    <button class="btn btn-primary" ng-click="nc.getAllNotes()">Get all notes</button>
-    <div ng-if="nc.notes.length > 0">
-        <table>
-            <tr>
-                <th>Id</th>
-                <th>Note</th>
-            </tr>
-            <tr ng-repeat="note in nc.notes">
-                <td>{{note.id}}</td>
-                <td>{{note.note}}</td>
-            </tr>
-        </table>
+    <div style="float:left">
+        <button class="btn btn-success glyphicon glyphicon-plus" data-toggle="modal" data-target="#createModal" />
+    </div>
+    <div style="float:right">
+        <button class="btn btn-primary glyphicon glyphicon-refresh" ng-click="nc.getAllNotes()" />
     </div>
 </div>
-
+</br>
 <div>
-    <button class="btn btn-primary" ng-click="nc.getNoteById()" ng-disabled="!nc.GetByIdId">Get this note</button>
-    <input type="text" ng-model="nc.GetByIdId">
-    <textarea rows="4" cols="50" ng-model="nc.GetByIdNote"></textarea>
-    <button class="btn btn-success" ng-click="nc.saveNote()" ng-disabled="!nc.GetByIdId || nc.GetByIdNote.length === 0">Save</button>
+    <div ng-show="!nc.LoadAllComplete">
+        <h3>Loading...</h3>
+    </div>
+    <div ng-show="nc.LoadAllComplete">
+        <div ng-if="nc.notes.length === 0">
+            <h3>There are no notes saved for this account.</h3>
+        </div>
+        <div ng-if="nc.notes.length > 0">
+            <table>
+                <tr>
+                    <th>Id</th>
+                    <th>Note</th>
+                    <th> </th>
+                </tr>
+                <tr ng-repeat="note in nc.notes">
+                    <td>{{note.id}}</td>
+                    <td>
+                        <div ng-show="!note.editing">{{note.note}}</div>
+                        <div ng-show="note.editing">
+                            <textarea rows="2" cols="30" ng-model="note.note"></textarea>
+                            <button ng-click="nc.saveNote(note)" class="btn btn-success glyphicon glyphicon-ok" ng-show="!nc.Saving" />
+                            <button ng-click="nc.getAllNotes()" class="btn btn-danger glyphicon glyphicon-remove" />
+                            <button ng-click="nc.saveNote(note)" class="btn btn-success" ng-show="nc.Saving" ng-disabled="true">Saving...</button>
+                        </div>
+                    </td>
+                    <td>
+                        <div ng-show="!note.editing">
+                            <span ng-click="nc.editNote(note)" class="btn btn-xs glyphicon glyphicon-pencil" />
+                        </div>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</div>
+</br>
+<div>
+    <button class="btn btn-success glyphicon glyphicon-plus" data-toggle="modal" data-target="#createModal" />
 </div>
 
-<div>
-    <textarea rows="4" cols="50" ng-model="nc.CreateNote"></textarea>
-    <button class="btn btn-success" ng-click="nc.createNote()">Create note</button>
+<!-- Modal -->
+<div class="container">
+    <!-- Modal -->
+    <div class="modal fade" id="createModal" role="dialog">
+        <div class="modal-dialog">
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Create new note</h4>
+                </div>
+                <div class="modal-body">
+                    <textarea rows="2" cols="50" ng-model="nc.CreateNote"></textarea>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-success" ng-show="nc.Saving" ng-disabled="true">Saving...</button>
+                    <button type="button" class="btn btn-success" ng-click="nc.createNote()" ng-show="!nc.Saving">Save</button>
+                    <button type="button" class="btn btn-danger" data-dismiss="modal" ng-show="!nc.Saving">Close</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
 </div>
