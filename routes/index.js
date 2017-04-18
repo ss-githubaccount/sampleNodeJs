@@ -9,5 +9,11 @@ router.get('/', function(req, res, next) {
 router.get('/notes', function(req, res, next) {
     res.sendFile(path.resolve(__dirname, '../views/index.html'));
 });
+router.get('/facebook', function(req, res, next) {
+    res.sendFile(path.resolve(__dirname, '../views/index.html'));
+});
+router.get('/instagram', function(req, res, next) {
+    res.sendFile(path.resolve(__dirname, '../views/index.html'));
+});
 
 module.exports = router;

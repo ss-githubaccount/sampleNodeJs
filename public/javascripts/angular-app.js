@@ -8,6 +8,10 @@ angular.module('sampleApp', ['ngRoute'])
             .when('/notes', {
                 templateUrl: '../partials/notes.html',
                 controller: 'notesController as nc'
+            })
+            .when('/facebook', {
+                templateUrl: '../partials/facebook.html',
+                controller: 'facebookController as fc'
             });
     }])
     .controller('indexController', ['$scope', function($scope) {
@@ -104,4 +108,70 @@ angular.module('sampleApp', ['ngRoute'])
         }
 
         nc.init();
+    }])
+    .controller('facebookController', ['$scope', '$window', function($scope, $window) {
+        var fc = this;
+
+        fc.init = function() {
+            fc.facebookLogin();
+        };
+
+        fc.facebookLogin = function() {
+            window.fbAsyncInit = function() {
+                FB.init({
+                    appId: '1305365532849952',
+                    cookie: true,
+                    xfbml: true,
+                    version: 'v2.8'
+                });
+                FB.AppEvents.logPageView();
+            };
+
+            $window.checkLoginState = function() {
+                FB.getLoginStatus(function(response) {
+                    console.log("statusChangeResponse", response);
+                    statusChangeCallback(response);
+                });
+            };
+
+            function statusChangeCallback(response) {
+                console.log('statusChangeCallback');
+                console.log(response);
+                if (response.status === 'connected') {
+                    testAPI();
+                } else if (response.status === 'not_authorized') {
+                    document.getElementById('status').innerHTML = 'Please log ' +
+                        'into this app.';
+                } else {
+                    document.getElementById('status').innerHTML = 'Please log ' +
+                        'into Facebook.';
+                }
+            };
+
+            function testAPI() {
+                console.log('Welcome!  Fetching your information.... ');
+                FB.api('/me', function(response) {
+                    console.log('Successful login for: ' + response.name);
+                    console.log('Successful login for: ' + response.id);
+                    console.log('Successful login for: ' + response.picture);
+                    document.getElementById('status').innerHTML =
+                        'Thanks for logging in, ' + response.name + '!';
+                    document.getElementById('pic').innerHTML =
+                        'Your user id is : ' + response.id + "<br />" +
+                        "<img src='" + "https://graph.facebook.com/" + response.id + "/picture?type=large' alt='' />";
+                });
+            };
+
+            // Load the SDK asynchronously
+            (function(d, s, id) {
+                var js, fjs = d.getElementsByTagName(s)[0];
+                if (d.getElementById(id)) return;
+                js = d.createElement(s);
+                js.id = id;
+                js.src = "//connect.facebook.net/en_US/sdk.js";
+                fjs.parentNode.insertBefore(js, fjs);
+            }(document, 'script', 'facebook-jssdk'));
+        };
+
+        fc.init();
     }]);
