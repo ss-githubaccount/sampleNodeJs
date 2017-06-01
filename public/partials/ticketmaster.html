@@ -1,0 +1,16 @@
+<h1>Buy tickets here!</h1>
+
+<button ng-click="tmc.getAllEvents()">Load all events</button>
+
+<table ng-show="tmc.events && tmc.events.length > 0">
+    <tr>
+        <th>
+            Event
+        </th>
+    </tr>
+    <tr ng-repeat="event in tmc.events">
+        <td>
+            {{event}}
+        </td>
+    </tr>
+</table>

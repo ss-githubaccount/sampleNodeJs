@@ -12,6 +12,14 @@ angular.module('sampleApp', ['ngRoute'])
             .when('/facebook', {
                 templateUrl: '../partials/facebook.html',
                 controller: 'facebookController as fc'
+            })
+            .when('/ticketmaster', {
+                templateUrl: '../partials/ticketmaster.html',
+                controller: 'ticketmasterController as tmc'
+            })
+            .when('/instagram', {
+                templateUrl: '../partials/instagram.html',
+                controller: 'instagramController as ic'
             });
     }])
     .controller('indexController', ['$scope', function($scope) {
@@ -41,7 +49,7 @@ angular.module('sampleApp', ['ngRoute'])
             nc.notes = [];
             nc.LoadAllComplete = false;
             nc.clearAlerts();
-            $http.get('/api/')
+            $http.get('/api/notes/')
                 .then(function(data) {
                     nc.notes = data.data;
                 }, function(err) {
@@ -54,7 +62,7 @@ angular.module('sampleApp', ['ngRoute'])
         // nc.getNoteById = function() {
         //     nc.clearAlerts();
         //     nc.GetByIdLoaded = false;
-        //     $http.get(`/api/${nc.GetByIdId}`)
+        //     $http.get(`/api/notes/${nc.GetByIdId}`)
         //         .then(function(data) {
         //             nc.GetByIdNote = data.data.note;
         //             nc.GetByIdLoaded = true;
@@ -67,7 +75,7 @@ angular.module('sampleApp', ['ngRoute'])
         nc.saveNote = function(note) {
             nc.clearAlerts();
             nc.Saving = true;
-            $http.put(`/api/${note.id}`, JSON.stringify(note))
+            $http.put(`/api/notes/${note.id}`, JSON.stringify(note))
                 .then(function(data) {
                     nc.SaveSuccessful = true;
                 }, function(err) {
@@ -83,7 +91,7 @@ angular.module('sampleApp', ['ngRoute'])
         nc.createNote = function() {
             nc.clearAlerts();
             nc.Saving = true;
-            $http.post('/api/', JSON.stringify({ note: nc.CreateNote }))
+            $http.post('/api/notes/', JSON.stringify({ note: nc.CreateNote }))
                 .then(function(data) {
                     nc.SaveSuccessful = true;
                 }, function(err) {
@@ -174,4 +182,22 @@ angular.module('sampleApp', ['ngRoute'])
         };
 
         fc.init();
-    }]);
+    }])
+    .controller('ticketmasterController', ['$scope', '$http', function($scope, $http) {
+        var tmc = this;
+
+        console.log("starting ticketmaster angular app controller");
+
+        // make call to API controller for all events
+        tmc.getAllEvents = () => {
+            $http.get('/api/ticketmaster/')
+                .then(response => {
+                    console.log(response);
+                });
+        };
+    }])
+    .controller('instagramController', ['$scope', '$window', function($scope, $window) {
+        var ic = this;
+
+        console.log("starting instagram angular app controller");
+    }])
